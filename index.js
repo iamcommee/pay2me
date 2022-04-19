@@ -64,7 +64,7 @@ async function slackSlashCommand(req, res, next) {
     } else if (req.body.command === '/create') {
 
         const triggerID = req.body.trigger_id;
-        
+
         const result = await web.views.open({
             trigger_id: triggerID,
             view: {
@@ -76,8 +76,7 @@ async function slackSlashCommand(req, res, next) {
                     "type": "plain_text",
                     "text": "Submit"
                 },
-                "blocks": [
-                    {
+                "blocks": [{
                         "block_id": "party",
                         "type": "input",
                         "element": {
@@ -143,26 +142,24 @@ async function slackSlashCommand(req, res, next) {
                     },
                     {
                         "type": "actions",
-                        "elements": [
-                            {
-                                "type": "button",
-                                "action_id": "add_payer",
-                                "text": {
-                                    "type": "plain_text",
-                                    "text": "Add another payer"
-                                }
+                        "elements": [{
+                            "type": "button",
+                            "action_id": "add_payer",
+                            "text": {
+                                "type": "plain_text",
+                                "text": "Add another payer"
                             }
-                        ]
+                        }]
                     }
                 ],
                 "type": "modal",
                 "callback_id": "create-qrcode-modal"
             }
-          });
-        
-          console.log(`Successfully opened root view ${result.view.id}`);
+        });
 
-          res.send();
+        console.log(`Successfully opened root view ${result.view.id}`);
+
+        res.send();
 
     } else {
 
@@ -172,7 +169,7 @@ async function slackSlashCommand(req, res, next) {
 }
 
 async function slackActivity(req, res, next) {
-    
+
     const payload = JSON.parse(req.body.payload);
 
     if (payload.type === 'block_actions') {
@@ -180,28 +177,26 @@ async function slackActivity(req, res, next) {
         if (payload.actions[0].action_id === 'add_payer') {
             const viewID = payload.view.id;
 
-            const result = await web.views.update({
-                view_id: viewID,
-                view: {
-                  type: 'modal',
-                  callback_id: 'create-qrcode-modal',
-                  title: {
-                    type: "plain_text",
-                    text: "pay2me"
+            const result = await web.views.push({
+                "view_id": viewID,
+                "view": {
+                    "type": 'modal',
+                    "callback_id": 'create-qrcode-modal',
+                    "title": {
+                        "type": "plain_text",
+                        "text": "pay2me"
                     },
-                  blocks: [
-                    {
-                      type: 'section',
-                      text: {
-                        type: 'plain_text',
-                        text: 'An updated modal, indeed'
-                      }
-                    }
-                  ]
+                    "blocks": [{
+                        "type": 'section',
+                        "text": {
+                            "type": 'plain_text',
+                            "text": 'An updated modal, indeed'
+                        }
+                    }]
                 }
-              });
+            });
 
-              console.log(`Successfully updated view ${viewID}`);
+            console.log(`Successfully updated view ${viewID}`);
 
         }
 
