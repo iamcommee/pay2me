@@ -151,8 +151,6 @@ async function slackSlashCommand(req, res, next) {
 
 async function slackActivity(req, res, next) {
 
-    console.log(req.body);
-
     const payload = JSON.parse(req.body.payload);
 
     if (payload.type === 'view_submission') {
@@ -188,7 +186,7 @@ async function slackActivity(req, res, next) {
             
             await web.chat.postMessage({
                 "channel": payload.response_urls[0].channel_id,
-                "text": `Party : ${party}`,
+                "text": `Party : ${party} | Promptpay : ${promptpay}`,
                 "attachments": [{
                     "blocks": blocks
                 }]
