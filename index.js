@@ -159,13 +159,37 @@ async function slackActivity(req, res, next) {
 
         if (payload.view.callback_id === 'create_qrcode') {
 
+            const party = payload.view.state.values.party.party_input.value;
+            const promptpay = payload.view.state.values.promptpay.promptpay_input.value;
             const order = payload.view.state.values.order.order_input.value.split("\n");
 
             for (let i = 0; i < order.length; i++) {
+
+                const orderDetail = order[i].split("_")
+                const order = orderDetail[0];
+                const amount = orderDetail[1];
+                const message = `${order} ${amount}`
+                const imageUrl = `https://pay2me-slack-bot.herokuapp.com/qrcode/${promptpay}/${amount}`;
+
                 await web.chat.postMessage({
                     "channel": payload.response_urls[0].channel_id,
-                    "text": order[i]
+                    "text": 'OK',
+                    "attachments": [{
+                        "blocks": [{
+                            "type": "section",
+                            "text": {
+                                "type": "mrkdwn",
+                                "text": `${message}`
+                            },
+                            "accessory": {
+                                "type": "image",
+                                "image_url": `${imageUrl}`,
+                                "alt_text": "QR Code"
+                            }
+                        }]
+                    }]
                 });
+
             }
 
             console.log(`Successfully create qr code ${payload.view.id}`);
