@@ -176,7 +176,7 @@ async function slackActivity(req, res, next) {
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": `${message} \n [QR Code Link](${imageUrl})`
+                        "text": `${message} \n <${imageUrl}|QR Code Image>`
                     },
                     "accessory": {
                         "type": "image",
