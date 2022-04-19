@@ -21,9 +21,9 @@ const web = new WebClient(slackAccessToken);
 const app = express();
 const port = process.env.PORT ?? '80';
 
-if (!slackSigningSecret || !slackAccessToken) {
-    throw new Error('A Slack signing secret and access token are required to run this app')
-}
+// if (!slackSigningSecret || !slackAccessToken) {
+//     throw new Error('A Slack signing secret and access token are required to run this app')
+// }
 
 http.createServer(app).listen(port, () => {
     console.log(`Server listening on port ${port}`);
@@ -75,7 +75,6 @@ async function slackSlashCommand(req, res, next) {
 }
 
 async function generatePromptpayQRCode(promptpay, amount) {
-    const {convert} = require('convert-svg-to-png');
     const promptpayQR = require('promptpay-qr');
     const qrcode = require('qrcode');
 
@@ -83,24 +82,16 @@ async function generatePromptpayQRCode(promptpay, amount) {
         amount
     });
 
-    const options = {
-        type: 'svg',
-        width: 200,
-        color: {
-            dark: '#000',
-            light: '#fff'
-        }
-    };
-
-    const qrCodeSVG = await new Promise((resolve, reject) => {
-        qrcode.toString(payload, options, (err, svg) => {
+    const qrCodeImageBase64 = await new Promise((resolve, reject) => {
+        qrcode.toDataURL(payload, (err, svg) => {
             if (err) return reject(err);
             resolve(svg);
         });
     });
 
-    // Convert to PNG
-    return await convert(qrCodeSVG);
+    console.log(qrCodeImageBase64)
+
+    return qrCodeImageBase64;
 }
 
 app.use('/slack/actions', slackInteractions.expressMiddleware());
@@ -115,8 +106,13 @@ app.get('/health', (req, res) => {
 });
 
 app.get('/qrcode/:promptpay/:amonut', async (req, res) => {
-    const qrCode = await generatePromptpayQRCode(req.params.promptpay, parseFloat(req.params.amonut));
-    res.set('Content-Type', 'image/png');
-    res.status(200);
-    res.send(qrCode);
+    const qrCodeImageBase64 = await generatePromptpayQRCode(req.params.promptpay, parseFloat(req.params.amonut));
+    const img = Buffer.from(qrCodeImageBase64.replace(/^data:image\/png;base64,/, ''), 'base64');
+
+    res.writeHead(200, {
+      'Content-Type': 'image/png',
+      'Content-Length': img.length
+    });
+
+    res.end(img); 
 });
