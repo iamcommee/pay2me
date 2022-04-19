@@ -45,28 +45,89 @@ async function slackSlashCommand(req, res, next) {
 
         let block = {
             "response_type": "in_channel",
-            "attachments": [
-                {
-                    "blocks": [
-                        {
-                            "type": "section",
-                            "text": {
-                                "type": "mrkdwn",
-                                "text": `${message}`
-                            },
-                            "accessory": {
-                                "type": "image",
-                                "image_url": `${imageUrl}`,
-                                "alt_text": "QR Code"
-                            }
-                        }
-                    ]
-                }
-            ]
+            "attachments": [{
+                "blocks": [{
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": `${message}`
+                    },
+                    "accessory": {
+                        "type": "image",
+                        "image_url": `${imageUrl}`,
+                        "alt_text": "QR Code"
+                    }
+                }]
+            }]
         };
 
         res.send(block);
 
+    } else if (req.body.command === '/test') {
+        let block = {
+            "response_type": "ephemeral",
+            "attachments": [{
+                "blocks": [
+                    {
+                        "type": "header",
+                        "text": {
+                            "type": "plain_text",
+                            "text": "New request",
+                            "emoji": true
+                        }
+                    },
+                    {
+                        "type": "section",
+                        "fields": [
+                            {
+                                "type": "mrkdwn",
+                                "text": "*Type:*\nPaid Time Off"
+                            },
+                            {
+                                "type": "mrkdwn",
+                                "text": "*Created by:*\n<example.com|Fred Enriquez>"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "section",
+                        "fields": [
+                            {
+                                "type": "mrkdwn",
+                                "text": "*When:*\nAug 10 - Aug 13"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "actions",
+                        "elements": [
+                            {
+                                "type": "button",
+                                "text": {
+                                    "type": "plain_text",
+                                    "emoji": true,
+                                    "text": "Approve"
+                                },
+                                "style": "primary",
+                                "value": "click_me_123"
+                            },
+                            {
+                                "type": "button",
+                                "text": {
+                                    "type": "plain_text",
+                                    "emoji": true,
+                                    "text": "Reject"
+                                },
+                                "style": "danger",
+                                "value": "click_me_123"
+                            }
+                        ]
+                    }
+                ]
+            }]
+        };
+
+        res.send(block);
     } else {
 
         res.send('Please use / to see command list');
