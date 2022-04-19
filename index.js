@@ -80,10 +80,10 @@ async function slackSlashCommand(req, res, next) {
                 },
                 "blocks": [
                     {
+                        "block_id": "party",
                         "type": "input",
                         "element": {
-                            "type": "plain_text_input",
-                            "action_id": "party"
+                            "type": "plain_text_input"
                         },
                         "label": {
                             "type": "plain_text",
@@ -91,14 +91,14 @@ async function slackSlashCommand(req, res, next) {
                         }
                     },
                     {
+                        "block_id": "promptpay",
                         "type": "input",
                         "element": {
                             "type": "plain_text_input",
                             "placeholder": {
                                 "type": "plain_text",
                                 "text": "Write ID Card or Phone Number"
-                            },
-                            "action_id": "promptpay"
+                            }
                         },
                         "label": {
                             "type": "plain_text",
