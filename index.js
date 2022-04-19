@@ -120,7 +120,7 @@ async function slackSlashCommand(req, res, next) {
                     }
                 ],
                 "type": "modal",
-                "callback_id": "create-qrcode-modal"
+                "callback_id": "create_qrcode"
             }
         });
 
@@ -141,34 +141,13 @@ async function slackActivity(req, res, next) {
 
     const payload = JSON.parse(req.body.payload);
 
-    if (payload.type === 'block_actions') {
+    if (payload.type === 'view_submission') {
 
-        if (payload.actions[0].action_id === 'add_payer') {
-            const viewID = payload.view.id;
-            const triggerID = payload.trigger_id;
-
-            payload.view.blocks.pop();
-            payload.view.blocks.pus();
-
-            const result = await web.views.update({
-                "view_id": viewID,
-                "trigger_id": triggerID,
-                "view": {
-                    "type": payload.view.type,
-                    "callback_id": payload.view.callback_id,
-                    "submit": payload.view.submit,
-                    "title": payload.view.title,
-                    "blocks" : payload.view.blocks,
-                }
-            });
-
-            console.log(`Successfully updated view ${viewID}`);
-
+        if (payload.view.callback_id === 'create_qrcode') {
+            console.log(`Successfully create qr code ${payload.view.id}`);
         }
 
     }
-
-    res.send(payload)
 }
 
 async function generatePromptpayQRCode(promptpay, amount) {
