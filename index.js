@@ -182,14 +182,48 @@ async function slackActivity(req, res, next) {
                 "view_id": viewID,
                 "trigger_id": triggerID,
                 "view": {
-                    "type": 'modal',
-                    "callback_id": 'create-qrcode-modal',
-                    "submit": {
-                        "type": "plain_text",
-                        "text": "Submit"
-                    },
+                    "type": payload.view.type,
+                    "callback_id": payload.view.callback_id,
+                    "submit": payload.view.submit,
                     "title": payload.view.title,
-                    "blocks" : payload.view.blocks
+                    "blocks" : payload.view.blocks.push(  {
+                        "type": "divider"
+                    },
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": "Payer"
+                        },
+                        "accessory": {
+                            "type": "users_select",
+                            "placeholder": {
+                                "type": "plain_text",
+                                "text": "Select a user",
+                                "emoji": true
+                            },
+                            "action_id": "users"
+                        }
+                    },
+                    {
+                        "type": "input",
+                        "element": {
+                            "type": "plain_text_input",
+                            "placeholder": {
+                                "type": "plain_text",
+                                "text": "Write order amount"
+                            },
+                            "action_id": "amounts"
+                        },
+                        "label": {
+                            "type": "plain_text",
+                            "text": "Amount",
+                            "emoji": true
+                        }
+                    },
+                    {
+                        "type": "divider"
+                    })
                 }
             });
 
