@@ -162,8 +162,8 @@ async function slackSlashCommand(req, res, next) {
         
           console.log(`Successfully opened root view ${result.view.id}`);
 
-          res.writeHead(200)
-
+          res.send()
+          
     } else {
 
         res.send('Please use / to see command list');
