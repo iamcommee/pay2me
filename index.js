@@ -36,8 +36,9 @@ async function slackSlashCommand(req, res, next) {
 
         const text = req.body.text.split("_");
         const promptpay = text[0];
-        const message = text[1];
+        const order = text[1];
         const amount = text[2];
+        const message = `${order} ${amount}`
         const imageUrl = `https://pay2me-slack-bot.herokuapp.com/qrcode/${promptpay}/${amount}`;
 
         let block = {
@@ -104,55 +105,17 @@ async function slackSlashCommand(req, res, next) {
                         }
                     },
                     {
-                        "type": "divider"
-                    },
-                    {
-                        "block_id": "user_selection_1",
-                        "type": "section",
-                        "text": {
-                            "type": "mrkdwn",
-                            "text": "Payer"
-                        },
-                        "accessory": {
-                            "type": "users_select",
-                            "placeholder": {
-                                "type": "plain_text",
-                                "text": "Select a user",
-                                "emoji": true
-                            },
-                            "action_id": "user_selection_inputs"
-                        }
-                    },
-                    {
-                        "block_id": "amounts",
                         "type": "input",
                         "element": {
                             "type": "plain_text_input",
-                            "placeholder": {
-                                "type": "plain_text",
-                                "text": "Write order amount"
-                            },
-                            "action_id": "amount_inputs"
+                            "multiline": true,
+                            "action_id": "plain_text_input-action"
                         },
                         "label": {
                             "type": "plain_text",
-                            "text": "Amount",
+                            "text": "Label",
                             "emoji": true
                         }
-                    },
-                    {
-                        "type": "divider"
-                    },
-                    {
-                        "type": "actions",
-                        "elements": [{
-                            "type": "button",
-                            "action_id": "add_payer",
-                            "text": {
-                                "type": "plain_text",
-                                "text": "Add another payer"
-                            }
-                        }]
                     }
                 ],
                 "type": "modal",
@@ -184,59 +147,7 @@ async function slackActivity(req, res, next) {
             const triggerID = payload.trigger_id;
 
             payload.view.blocks.pop();
-            payload.view.blocks.push(
-                {
-                    "type": "divider"
-                },
-                {
-                    "block_id": "user_selection",
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": "Payer"
-                    },
-                    "accessory": {
-                        "type": "users_select",
-                        "placeholder": {
-                            "type": "plain_text",
-                            "text": "Select a user",
-                            "emoji": true
-                        },
-                        "action_id": "user_selection_inputs"
-                    }
-                },
-                {
-                    "block_id": "amounts",
-                    "type": "input",
-                    "element": {
-                        "type": "plain_text_input",
-                        "placeholder": {
-                            "type": "plain_text",
-                            "text": "Write order amount"
-                        },
-                        "action_id": "amount_inputs"
-                    },
-                    "label": {
-                        "type": "plain_text",
-                        "text": "Amount",
-                        "emoji": true
-                    }
-                },
-                {
-                    "type": "divider"
-                },
-                {
-                    "type": "actions",
-                    "elements": [{
-                        "type": "button",
-                        "action_id": "add_payer",
-                        "text": {
-                            "type": "plain_text",
-                            "text": "Add another payer"
-                        }
-                    }]
-                }
-            );
+            payload.view.blocks.pus());
 
             const result = await web.views.update({
                 "view_id": viewID,
