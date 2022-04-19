@@ -198,6 +198,9 @@ async function slackActivity(req, res, next) {
                   ]
                 }
               });
+
+              console.log(`Successfully updated view ${viewID}`);
+
         }
 
     }
