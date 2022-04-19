@@ -162,7 +162,7 @@ async function slackActivity(req, res, next) {
 
             await web.chat.postMessage({
                 "channel": payload.response_urls[0].channel_id,
-                "text": "OK"
+                "text": payload.view.state.order.order_input.value
             });
 
             console.log(`Successfully create qr code ${payload.view.id}`);
