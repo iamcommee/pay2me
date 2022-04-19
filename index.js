@@ -76,19 +76,18 @@ async function slackSlashCommand(req, res, next) {
                     "type": "plain_text",
                     "text": "Submit"
                 },
-                "blocks": [
-                    {
+                "blocks": [{
                         "block_id": "channel",
                         "type": "input",
                         "label": {
-                          "type": "plain_text",
-                          "text": "Select a channel to post the result on",
+                            "type": "plain_text",
+                            "text": "Select a channel to post the result on",
                         },
                         "element": {
-                          "action_id": "channel_input",
-                          "type": "conversations_select",
-                          "default_to_current_conversation": true,
-                          "response_url_enabled": true,
+                            "action_id": "channel_input",
+                            "type": "conversations_select",
+                            "default_to_current_conversation": true,
+                            "response_url_enabled": true,
                         },
                     },
                     {
@@ -152,67 +151,72 @@ async function slackSlashCommand(req, res, next) {
 
 async function slackActivity(req, res, next) {
 
-    console.log(req.body);
+        console.log(req.body);
 
-    const payload = JSON.parse(req.body.payload);
+        const payload = JSON.parse(req.body.payload);
 
-    if (payload.type === 'view_submission') {
+        if (payload.type === 'view_submission') {
 
-        if (payload.view.callback_id === 'create_qrcode') {
+            if (payload.view.callback_id === 'create_qrcode') {
 
-            await web.chat.postMessage({
-                "channel": payload.response_urls[0].channel_id,
-                "text": payload.view.state.values.order.order_input.value
+                const order = payload.view.state.values.order.order_input.value.split("\\n");
+
+                for (i == 0; i < order.length; i++) {
+
+                    await web.chat.postMessage({
+                        "channel": payload.response_urls[0].channel_id,
+                        "text": order[i]
+                    });
+                    for (i == 0; i < order.length; i++) {
+
+                        console.log(`Successfully create qr code ${payload.view.id}`);
+                    }
+
+                }
+
+                res.send();
+            }
+
+            async function generatePromptpayQRCode(promptpay, amount) {
+                const promptpayQR = require('promptpay-qr');
+                const qrcode = require('qrcode');
+
+                const payload = promptpayQR(promptpay, {
+                    amount
+                });
+
+                const qrCodeImageBase64 = await new Promise((resolve, reject) => {
+                    qrcode.toDataURL(payload, (err, svg) => {
+                        if (err) return reject(err);
+                        resolve(svg);
+                    });
+                });
+
+                return qrCodeImageBase64;
+            }
+
+            app.use('/slack/actions', slackInteractions.expressMiddleware());
+            app.post('/slack/commands', bodyParser.urlencoded({
+                extended: false
+            }), slackSlashCommand);
+            app.post('/slack/activities', bodyParser.urlencoded({
+                extended: false
+            }), slackActivity);
+
+            app.get('/health', (req, res) => {
+                return res.send({
+                    message: 'OK'
+                });
             });
 
-            console.log(`Successfully create qr code ${payload.view.id}`);
-        }
+            app.get('/qrcode/:promptpay/:amonut', async (req, res) => {
+                const qrCodeImageBase64 = await generatePromptpayQRCode(req.params.promptpay, parseFloat(req.params.amonut));
+                const img = Buffer.from(qrCodeImageBase64.replace(/^data:image\/png;base64,/, ''), 'base64');
 
-    }
+                res.writeHead(200, {
+                    'Content-Type': 'image/png',
+                    'Content-Length': img.length
+                });
 
-    res.send();
-}
-
-async function generatePromptpayQRCode(promptpay, amount) {
-    const promptpayQR = require('promptpay-qr');
-    const qrcode = require('qrcode');
-
-    const payload = promptpayQR(promptpay, {
-        amount
-    });
-
-    const qrCodeImageBase64 = await new Promise((resolve, reject) => {
-        qrcode.toDataURL(payload, (err, svg) => {
-            if (err) return reject(err);
-            resolve(svg);
-        });
-    });
-
-    return qrCodeImageBase64;
-}
-
-app.use('/slack/actions', slackInteractions.expressMiddleware());
-app.post('/slack/commands', bodyParser.urlencoded({
-    extended: false
-}), slackSlashCommand);
-app.post('/slack/activities', bodyParser.urlencoded({
-    extended: false
-}), slackActivity);
-
-app.get('/health', (req, res) => {
-    return res.send({
-        message: 'OK'
-    });
-});
-
-app.get('/qrcode/:promptpay/:amonut', async (req, res) => {
-    const qrCodeImageBase64 = await generatePromptpayQRCode(req.params.promptpay, parseFloat(req.params.amonut));
-    const img = Buffer.from(qrCodeImageBase64.replace(/^data:image\/png;base64,/, ''), 'base64');
-
-    res.writeHead(200, {
-        'Content-Type': 'image/png',
-        'Content-Length': img.length
-    });
-
-    res.end(img);
-});
+                res.end(img);
+            });
