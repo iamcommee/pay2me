@@ -178,10 +178,12 @@ async function slackActivity(req, res, next) {
             const viewID = payload.view.id;
             const triggerID = payload.triggerID;
 
-            const result = await web.views.push(payload);
+            const result = await web.views.push({
+                "trigger_id": triggerID,
+                "view": payload.view
+            });
 
             console.log(`Successfully updated view ${viewID}`);
-
         }
 
     }
