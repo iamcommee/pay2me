@@ -83,7 +83,7 @@ async function slackSlashCommand(req, res, next) {
                         "type": "input",
                         "element": {
                             "type": "plain_text_input",
-                            "action_id": "title"
+                            "action_id": "party"
                         },
                         "label": {
                             "type": "plain_text",
@@ -96,8 +96,9 @@ async function slackSlashCommand(req, res, next) {
                             "type": "plain_text_input",
                             "placeholder": {
                                 "type": "plain_text",
-                                "text": "ID Card or Phone Number"
-                            }
+                                "text": "Write ID Card or Phone Number"
+                            },
+                            "action_id": "promptpay"
                         },
                         "label": {
                             "type": "plain_text",
@@ -120,7 +121,7 @@ async function slackSlashCommand(req, res, next) {
                                 "text": "Select a user",
                                 "emoji": true
                             },
-                            "action_id": "users_select-action"
+                            "action_id": "users"
                         }
                     },
                     {
@@ -129,8 +130,9 @@ async function slackSlashCommand(req, res, next) {
                             "type": "plain_text_input",
                             "placeholder": {
                                 "type": "plain_text",
-                                "text": "Order Amount"
-                            }
+                                "text": "Write order amount"
+                            },
+                            "action_id": "amounts"
                         },
                         "label": {
                             "type": "plain_text",
