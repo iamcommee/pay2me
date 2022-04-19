@@ -36,6 +36,36 @@ async function slackSlashCommand(req, res, next) {
 
     if (req.body.command === '/qrcode') {
 
+        const text = req.body.text.split(" ")
+        const promptpay = text[0]
+        const amount = text[1]
+        const payer = text[2]
+        const message = `จ่ายค่าอาหาร ${amount} บาท มาเดี๋ยวนี้คุณ ${payer}` 
+        const imageUrl = `https://pay2me-slack-bot.herokuapp.com/qrcode/${promptpay}/${amount}`
+        
+        let block = {
+            "response_type": "ephemeral",
+            "attachments": [
+               {
+                "blocks": [
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": `${message}`
+                        },
+                        "accessory": {
+                            "type": "image",
+                            "image_url": `${imageUrl}`,
+                            "alt_text": "QR Code"
+                        }
+                    }
+                ]
+            }
+            ]
+        }
+
+        res.send(block)
 
     } else {
 
