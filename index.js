@@ -179,6 +179,8 @@ async function slackActivity(req, res, next) {
 
     if (payload.type === 'block_actions') {
 
+        console.log(payload.actions[0].action_id);
+
         if (payload.actions[0].action_id === 'add_payer') {
             const viewID = payload.view.id;
 
