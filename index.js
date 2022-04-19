@@ -178,6 +178,7 @@ async function slackActivity(req, res, next) {
             const viewID = payload.view.id;
             const triggerID = payload.trigger_id;
 
+            payload.view.blocks.pop();
             payload.view.blocks.push(
                 {
                     "type": "divider"
