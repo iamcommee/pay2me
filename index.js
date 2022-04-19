@@ -168,7 +168,8 @@ async function slackActivity(req, res, next) {
                         "text": {
                             "type": "plain_text",
                             "text": "This is a plain text section block.",
-                            "emoji": true
+                            "emoji": true,
+                            "fallback": "This is an attachment's fallback"
                         }
                     }]
                 }]
