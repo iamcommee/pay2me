@@ -162,17 +162,7 @@ async function slackActivity(req, res, next) {
 
             await web.chat.postMessage({
                 "channel": payload.response_urls[0].channel_id,
-                "attachments": [{
-                    "blocks": [{
-                        "type": "section",
-                        "text": {
-                            "type": "plain_text",
-                            "text": "This is a plain text section block.",
-                            "emoji": true,
-                            "fallback": "This is an attachment's fallback"
-                        }
-                    }]
-                }]
+                "text": "OK"
             });
 
             console.log(`Successfully create qr code ${payload.view.id}`);
