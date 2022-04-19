@@ -173,7 +173,7 @@ async function slackSlashCommand(req, res, next) {
 
 async function slackActivity(req, res, next) {
     
-    const payload = req.body;
+    const payload = req.body.payload;
 
     console.log(payload)
 
