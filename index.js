@@ -161,11 +161,11 @@ async function slackActivity(req, res, next) {
 
             const party = payload.view.state.values.party.party_input.value;
             const promptpay = payload.view.state.values.promptpay.promptpay_input.value;
-            const order = payload.view.state.values.order.order_input.value.split("\n");
+            const orderList = payload.view.state.values.order.order_input.value.split("\n");
 
-            for (let i = 0; i < order.length; i++) {
+            for (let i = 0; i < orderList.length; i++) {
 
-                const orderDetail = order[i].split("_")
+                const orderDetail = orderList[i].split("_")
                 const order = orderDetail[0];
                 const amount = orderDetail[1];
                 const message = `${order} ${amount}`
