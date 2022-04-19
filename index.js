@@ -70,33 +70,96 @@ async function slackSlashCommand(req, res, next) {
         const result = await web.views.open({
             trigger_id: triggerID,
             view: {
-              type: 'modal',
-              callback_id: 'view_identifier',
-              title: {
-                type: 'plain_text',
-                text: 'Modal title'
-              },
-              submit: {
-                type: 'plain_text',
-                text: 'Submit'
-              },
-              blocks: [
-                {
-                  type: 'input',
-                  label: {
-                    type: 'plain_text',
-                    text: 'Input label'
-                  },
-                  element: {
-                    type: 'plain_text_input',
-                    action_id: 'value_indentifier'
-                  }
-                }
-              ]
+                "title": {
+                    "type": "plain_text",
+                    "text": "pay2me"
+                },
+                "submit": {
+                    "type": "plain_text",
+                    "text": "Submit"
+                },
+                "blocks": [
+                    {
+                        "type": "input",
+                        "element": {
+                            "type": "plain_text_input",
+                            "action_id": "title"
+                        },
+                        "label": {
+                            "type": "plain_text",
+                            "text": "Party"
+                        }
+                    },
+                    {
+                        "type": "input",
+                        "element": {
+                            "type": "plain_text_input",
+                            "placeholder": {
+                                "type": "plain_text",
+                                "text": "ID Card or Phone Number"
+                            }
+                        },
+                        "label": {
+                            "type": "plain_text",
+                            "text": "Promptpay"
+                        }
+                    },
+                    {
+                        "type": "divider"
+                    },
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": "Payer"
+                        },
+                        "accessory": {
+                            "type": "users_select",
+                            "placeholder": {
+                                "type": "plain_text",
+                                "text": "Select a user",
+                                "emoji": true
+                            },
+                            "action_id": "users_select-action"
+                        }
+                    },
+                    {
+                        "type": "input",
+                        "element": {
+                            "type": "plain_text_input",
+                            "placeholder": {
+                                "type": "plain_text",
+                                "text": "Order Amount"
+                            }
+                        },
+                        "label": {
+                            "type": "plain_text",
+                            "text": "Amount",
+                            "emoji": true
+                        }
+                    },
+                    {
+                        "type": "divider"
+                    },
+                    {
+                        "type": "actions",
+                        "elements": [
+                            {
+                                "type": "button",
+                                "action_id": "add_payer",
+                                "text": {
+                                    "type": "plain_text",
+                                    "text": "Add another payer  "
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "type": "modal",
+                "callback_id": "create-qrcode-modal"
             }
           });
         
-          // The result contains an identifier for the root view, view.id
           console.log(`Successfully opened root view ${result.view.id}`);
 
     } else {
