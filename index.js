@@ -173,9 +173,9 @@ async function slackSlashCommand(req, res, next) {
 
 async function slackActivity(req, res, next) {
     
-    console.log(req.body)
-
     const payload = req.body;
+
+    console.log(payload.type)
 
     if (payload.type === 'block_actions') {
 
