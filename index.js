@@ -175,17 +175,12 @@ async function slackActivity(req, res, next) {
     if (payload.type === 'block_actions') {
 
         if (payload.actions[0].action_id === 'add_payer') {
-            const viewID = payload.view.id;
+            const triggerID = payload.trigger_id
 
             const result = await web.views.push({
-                "view_id": viewID,
+                "trigger_id": triggerID,
                 "view": {
                     "type": 'modal',
-                    "callback_id": 'create-qrcode-modal',
-                    "title": {
-                        "type": "plain_text",
-                        "text": "pay2me"
-                    },
                     "blocks": [{
                         "type": 'section',
                         "text": {
