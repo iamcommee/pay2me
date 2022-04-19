@@ -172,6 +172,8 @@ async function slackActivity(req, res, next) {
 
     const payload = JSON.parse(req.body.payload);
 
+    console.log(payload);
+
     if (payload.type === 'block_actions') {
 
         if (payload.actions[0].action_id === 'add_payer') {
