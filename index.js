@@ -74,6 +74,10 @@ async function slackSlashCommand(req, res, next) {
     }
 }
 
+async function slackActivity(req, res, next) {
+    console.log(req.body)
+}
+
 async function generatePromptpayQRCode(promptpay, amount) {
     const promptpayQR = require('promptpay-qr');
     const qrcode = require('qrcode');
@@ -96,6 +100,9 @@ app.use('/slack/actions', slackInteractions.expressMiddleware());
 app.post('/slack/commands', bodyParser.urlencoded({
     extended: false
 }), slackSlashCommand);
+app.post('/slack/activities', bodyParser.urlencoded({
+    extended: false
+}), slackActivity);
 
 app.get('/health', (req, res) => {
     return res.send({
