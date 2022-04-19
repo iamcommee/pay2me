@@ -44,7 +44,7 @@ async function slackSlashCommand(req, res, next) {
         const imageUrl = `https://pay2me-slack-bot.herokuapp.com/qrcode/${promptpay}/${amount}`;
 
         let block = {
-            "response_type": "ephemeral",
+            "response_type": "in_channel",
             "attachments": [
                 {
                     "blocks": [
