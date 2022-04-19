@@ -184,17 +184,8 @@ async function slackActivity(req, res, next) {
                 "view": {
                     "type": 'modal',
                     "callback_id": 'create-qrcode-modal',
-                    "title": {
-                        "type": "plain_text",
-                        "text": "pay2me"
-                    },
-                    "blocks": [{
-                        "type": 'section',
-                        "text": {
-                            "type": 'plain_text',
-                            "text": 'An updated modal, indeed'
-                        }
-                    }]
+                    "title": payload.view.title,
+                    "blocks" : payload.view.blocks
                 }
             });
 
