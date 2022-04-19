@@ -163,6 +163,7 @@ async function slackActivity(req, res, next) {
             const promptpay = payload.view.state.values.promptpay.promptpay_input.value;
             const orderList = payload.view.state.values.order.order_input.value.split("\n");
 
+            let blocks = [];
             for (let i = 0; i < orderList.length; i++) {
 
                 const orderDetail = orderList[i].split("_")
@@ -171,26 +172,27 @@ async function slackActivity(req, res, next) {
                 const message = `${order} ${amount}`
                 const imageUrl = `https://pay2me-slack-bot.herokuapp.com/qrcode/${promptpay}/${amount}`;
 
-                await web.chat.postMessage({
-                    "channel": payload.response_urls[0].channel_id,
-                    "text": 'OK',
-                    "attachments": [{
-                        "blocks": [{
-                            "type": "section",
-                            "text": {
-                                "type": "mrkdwn",
-                                "text": `${message}`
-                            },
-                            "accessory": {
-                                "type": "image",
-                                "image_url": `${imageUrl}`,
-                                "alt_text": "QR Code"
-                            }
-                        }]
-                    }]
+                blocks.push({
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": `${message}`
+                    },
+                    "accessory": {
+                        "type": "image",
+                        "image_url": `${imageUrl}`,
+                        "alt_text": "QR Code"
+                    }
                 });
-
             }
+            
+            await web.chat.postMessage({
+                "channel": payload.response_urls[0].channel_id,
+                "text": `Party : ${party}`,
+                "attachments": [{
+                    "blocks": blocks
+                }]
+            });
 
             console.log(`Successfully create qr code ${payload.view.id}`);
         }
