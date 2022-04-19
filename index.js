@@ -175,7 +175,7 @@ async function slackActivity(req, res, next) {
     
     const payload = req.body;
 
-    console.log(payload.type)
+    console.log(payload)
 
     if (payload.type === 'block_actions') {
 
