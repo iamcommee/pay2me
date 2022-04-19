@@ -171,6 +171,8 @@ async function slackActivity(req, res, next) {
                 const imageUrl = `https://pay2me-slack-bot.herokuapp.com/qrcode/${promptpay}/${amount}`;
 
                 blocks.push({
+                    "type": "divider"
+                }, {
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
