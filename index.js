@@ -21,9 +21,9 @@ const web = new WebClient(slackAccessToken);
 const app = express();
 const port = process.env.PORT ?? '80';
 
-// if (!slackSigningSecret || !slackAccessToken) {
-//     throw new Error('A Slack signing secret and access token are required to run this app')
-// }
+if (!slackSigningSecret || !slackAccessToken) {
+    throw new Error('A Slack signing secret and access token are required to run this app');
+}
 
 http.createServer(app).listen(port, () => {
     console.log(`Server listening on port ${port}`);
@@ -32,7 +32,7 @@ http.createServer(app).listen(port, () => {
 // Commands
 async function slackSlashCommand(req, res, next) {
 
-    console.log(req.body);
+    // console.log(req.body);
 
     if (req.body.command === '/qrcode') {
 
@@ -89,8 +89,6 @@ async function generatePromptpayQRCode(promptpay, amount) {
         });
     });
 
-    console.log(qrCodeImageBase64)
-
     return qrCodeImageBase64;
 }
 
@@ -110,9 +108,9 @@ app.get('/qrcode/:promptpay/:amonut', async (req, res) => {
     const img = Buffer.from(qrCodeImageBase64.replace(/^data:image\/png;base64,/, ''), 'base64');
 
     res.writeHead(200, {
-      'Content-Type': 'image/png',
-      'Content-Length': img.length
+        'Content-Type': 'image/png',
+        'Content-Length': img.length
     });
 
-    res.end(img); 
+    res.end(img);
 });
