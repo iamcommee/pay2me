@@ -181,21 +181,7 @@ async function slackActivity(req, res, next) {
             const result = await web.views.update({
                 "view_id": viewID,
                 "trigger_id": triggerID,
-                "view": {
-                    "type": 'modal',
-                    "callback_id": 'create-qrcode-modal',
-                    "title": {
-                        "type": "plain_text",
-                        "text": "pay2me"
-                    },
-                    "blocks": [{
-                        "type": 'section',
-                        "text": {
-                            "type": 'plain_text',
-                            "text": 'An updated modal, indeed'
-                        }
-                    }]
-                }
+                "view": payload.view
             });
 
             console.log(`Successfully updated view ${viewID}`);
