@@ -8,8 +8,8 @@ const {
     WebClient
 } = require('@slack/web-api')
 
-const slackSigningSecret = process.env.SLACK_SIGNING_SECRET
-const slackAccessToken = process.env.SLACK_ACCESS_TOKEN
+const slackSigningSecret = process.env.SLACK_SIGNING_SECRET ?? ''
+const slackAccessToken = process.env.SLACK_ACCESS_TOKEN ?? ''
 
 // Create the adapter using the app's signing secret
 const slackInteractions = createMessageAdapter(slackSigningSecret)
@@ -75,6 +75,7 @@ async function slackSlashCommand(req, res, next) {
 }
 
 async function generatePromptpayQRCode(promptpay, amount) {
+    const { convert } = require('convert-svg-to-png');
     const promptpayQR = require('promptpay-qr')
     const qrcode = require('qrcode')
 
@@ -84,18 +85,22 @@ async function generatePromptpayQRCode(promptpay, amount) {
 
     const options = {
         type: 'svg',
+        width: 200,
         color: {
             dark: '#000',
             light: '#fff'
         }
     }
 
-    return await new Promise((resolve, reject) => {
+    const qrCodeSVG = await new Promise((resolve, reject) => {
         qrcode.toString(payload, options, (err, svg) => {
             if (err) return reject(err)
             resolve(svg)
         })
     })
+
+    // Convert to PNG
+    return await convert(qrCodeSVG);
 }
 
 app.use('/slack/actions', slackInteractions.expressMiddleware())
@@ -110,7 +115,7 @@ app.get('/health', (req, res) => {
 })
 
 app.get('/qrcode/:promptpay/:amonut', async (req, res) => {
-    const qrCodeSVG = await generatePromptpayQRCode(req.params.promptpay, parseFloat(req.params.amonut))
-    res.setHeader('Content-Type', 'image/svg+xml');
-    res.send(qrCodeSVG)
+    const qrCode = await generatePromptpayQRCode(req.params.promptpay, parseFloat(req.params.amonut))
+    res.set('Content-Type', 'image/png');
+    res.send(qrCode);
 });
