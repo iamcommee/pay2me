@@ -186,9 +186,7 @@ async function slackActivity(req, res, next) {
                     "callback_id": payload.view.callback_id,
                     "submit": payload.view.submit,
                     "title": payload.view.title,
-                    "blocks" : payload.view.blocks.push(  {
-                        "type": "divider"
-                    },
+                    "blocks" : payload.view.blocks.push(
                     {
                         "type": "section",
                         "text": {
@@ -204,25 +202,6 @@ async function slackActivity(req, res, next) {
                             },
                             "action_id": "users"
                         }
-                    },
-                    {
-                        "type": "input",
-                        "element": {
-                            "type": "plain_text_input",
-                            "placeholder": {
-                                "type": "plain_text",
-                                "text": "Write order amount"
-                            },
-                            "action_id": "amounts"
-                        },
-                        "label": {
-                            "type": "plain_text",
-                            "text": "Amount",
-                            "emoji": true
-                        }
-                    },
-                    {
-                        "type": "divider"
                     })
                 }
             });
