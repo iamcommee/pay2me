@@ -160,9 +160,8 @@ async function slackActivity(req, res, next) {
 
         if (payload.view.callback_id === 'create_qrcode') {
 
-
-            let block = {
-                "response_type": "in_channel",
+            await web.chat.postMessage({
+                "channel": payload.response_urls[0].channel_id,
                 "attachments": [{
                     "blocks": [{
                         "type": "section",
@@ -173,13 +172,9 @@ async function slackActivity(req, res, next) {
                         }
                     }]
                 }]
-            };
-    
-            res.send(block);
+            });
 
             console.log(`Successfully create qr code ${payload.view.id}`);
-
-            return;
         }
 
     }
