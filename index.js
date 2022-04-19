@@ -87,9 +87,9 @@ async function slackSlashCommand(req, res, next) {
                         "element": {
                           "action_id": "channel_input",
                           "type": "conversations_select",
+                          "default_to_current_conversation": true,
                           "response_url_enabled": true,
                         },
-                        "default_to_current_conversation": true
                     },
                     {
                         "block_id": "party",
