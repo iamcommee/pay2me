@@ -21,9 +21,9 @@ const web = new WebClient(slackAccessToken);
 const app = express();
 const port = process.env.PORT ?? '80';
 
-// if (!slackSigningSecret || !slackAccessToken) {
-//     throw new Error('A Slack signing secret and access token are required to run this app')
-// }
+if (!slackSigningSecret || !slackAccessToken) {
+    throw new Error('A Slack signing secret and access token are required to run this app')
+}
 
 http.createServer(app).listen(port, () => {
     console.log(`Server listening on port ${port}`);
