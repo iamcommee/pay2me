@@ -164,7 +164,7 @@ async function slackActivity(req, res, next) {
             for (let i = 0; i < order.length; i++) {
                 await web.chat.postMessage({
                     "channel": payload.response_urls[0].channel_id,
-                    "text": order
+                    "text": order[i]
                 });
             }
 
