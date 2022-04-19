@@ -144,10 +144,32 @@ async function slackActivity(req, res, next) {
     if (payload.type === 'view_submission') {
 
         if (payload.view.callback_id === 'create_qrcode') {
+
+
+            let block = {
+                "response_type": "in_channel",
+                "attachments": [{
+                    "blocks": [{
+                        "type": "section",
+                        "text": {
+                            "type": "plain_text",
+                            "text": "This is a plain text section block.",
+                            "emoji": true
+                        }
+                    }]
+                }]
+            };
+    
+            res.send(block);
+
             console.log(`Successfully create qr code ${payload.view.id}`);
+
+            return;
         }
 
     }
+
+    res.send();
 }
 
 async function generatePromptpayQRCode(promptpay, amount) {
