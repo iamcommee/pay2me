@@ -176,7 +176,7 @@ async function slackActivity(req, res, next) {
 
         if (payload.actions[0].action_id === 'add_payer') {
             const viewID = payload.view.id;
-            const triggerID = payload.triggerID;
+            const triggerID = payload.trigger_id;
 
             const result = await web.views.push({
                 "trigger_id": triggerID,
