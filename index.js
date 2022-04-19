@@ -36,9 +36,8 @@ async function slackSlashCommand(req, res, next) {
 
         const text = req.body.text.split(" ");
         const promptpay = text[0];
-        const amount = text[1];
-        const payer = text[2];
-        const message = `${payer}`;
+        const message = text[1];
+        const amount = text[2];
         const imageUrl = `https://pay2me-slack-bot.herokuapp.com/qrcode/${promptpay}/${amount}`;
 
         let block = {
@@ -108,7 +107,7 @@ async function slackSlashCommand(req, res, next) {
                         "type": "divider"
                     },
                     {
-                        "block_id": "user_selection",
+                        "block_id": "user_selection_1",
                         "type": "section",
                         "text": {
                             "type": "mrkdwn",
