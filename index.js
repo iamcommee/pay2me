@@ -162,7 +162,7 @@ async function slackSlashCommand(req, res, next) {
         
           console.log(`Successfully opened root view ${result.view.id}`);
 
-          res.send('OK');
+          res.writeHead(200)
 
     } else {
 
