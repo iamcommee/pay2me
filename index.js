@@ -76,7 +76,22 @@ async function slackSlashCommand(req, res, next) {
                     "type": "plain_text",
                     "text": "Submit"
                 },
-                "blocks": [{
+                "blocks": [
+                    {
+                        "block_id": "channel",
+                        "type": "input",
+                        "label": {
+                          "type": "plain_text",
+                          "text": "Select a channel to post the result on",
+                        },
+                        "element": {
+                          "action_id": "channel_input",
+                          "type": "conversations_select",
+                          "response_url_enabled": true,
+                        },
+                        "default_to_current_conversation": true
+                    },
+                    {
                         "block_id": "party",
                         "type": "input",
                         "element": {
