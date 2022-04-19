@@ -177,8 +177,6 @@ async function slackActivity(req, res, next) {
 
     if (payload.type === 'block_actions') {
 
-        console.log('Action => ',payload.actions);
-
         if (payload.actions[0].action_id === 'add_payer') {
             const viewID = payload.view.id;
 
@@ -187,6 +185,10 @@ async function slackActivity(req, res, next) {
                 view: {
                   type: 'modal',
                   callback_id: 'create-qrcode-modal',
+                  title: {
+                    type: "plain_text",
+                    text: "pay2me"
+                    },
                   blocks: [
                     {
                       type: 'section',
