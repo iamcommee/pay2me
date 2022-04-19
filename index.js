@@ -178,9 +178,57 @@ async function slackActivity(req, res, next) {
             const viewID = payload.view.id;
             const triggerID = payload.trigger_id;
 
-            console.log(payload.view.blocks.push( {
-                "type": "divider"
-            }));
+            payload.view.blocks.push(
+                {
+                    "type": "divider"
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "Payer"
+                    },
+                    "accessory": {
+                        "type": "users_select",
+                        "placeholder": {
+                            "type": "plain_text",
+                            "text": "Select a user",
+                            "emoji": true
+                        },
+                        "action_id": "users"
+                    }
+                },
+                {
+                    "type": "input",
+                    "element": {
+                        "type": "plain_text_input",
+                        "placeholder": {
+                            "type": "plain_text",
+                            "text": "Write order amount"
+                        },
+                        "action_id": "amounts"
+                    },
+                    "label": {
+                        "type": "plain_text",
+                        "text": "Amount",
+                        "emoji": true
+                    }
+                },
+                {
+                    "type": "divider"
+                },
+                {
+                    "type": "actions",
+                    "elements": [{
+                        "type": "button",
+                        "action_id": "add_payer",
+                        "text": {
+                            "type": "plain_text",
+                            "text": "Add another payer"
+                        }
+                    }]
+                }
+            );
 
             const result = await web.views.update({
                 "view_id": viewID,
