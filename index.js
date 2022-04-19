@@ -80,7 +80,8 @@ async function slackSlashCommand(req, res, next) {
                         "block_id": "party",
                         "type": "input",
                         "element": {
-                            "type": "plain_text_input"
+                            "type": "plain_text_input",
+                            "action_id": "party_inputs"
                         },
                         "label": {
                             "type": "plain_text",
@@ -95,7 +96,8 @@ async function slackSlashCommand(req, res, next) {
                             "placeholder": {
                                 "type": "plain_text",
                                 "text": "Write ID Card or Phone Number"
-                            }
+                            },
+                            "action_id": "promptpay_inputs"
                         },
                         "label": {
                             "type": "plain_text",
@@ -106,6 +108,7 @@ async function slackSlashCommand(req, res, next) {
                         "type": "divider"
                     },
                     {
+                        "block_id": "user_selection",
                         "type": "section",
                         "text": {
                             "type": "mrkdwn",
@@ -118,10 +121,11 @@ async function slackSlashCommand(req, res, next) {
                                 "text": "Select a user",
                                 "emoji": true
                             },
-                            "action_id": "users"
+                            "action_id": "user_selection_inputs"
                         }
                     },
                     {
+                        "block_id": "amounts",
                         "type": "input",
                         "element": {
                             "type": "plain_text_input",
@@ -129,7 +133,7 @@ async function slackSlashCommand(req, res, next) {
                                 "type": "plain_text",
                                 "text": "Write order amount"
                             },
-                            "action_id": "amounts"
+                            "action_id": "amount_inputs"
                         },
                         "label": {
                             "type": "plain_text",
@@ -186,6 +190,7 @@ async function slackActivity(req, res, next) {
                     "type": "divider"
                 },
                 {
+                    "block_id": "user_selection",
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
@@ -198,10 +203,11 @@ async function slackActivity(req, res, next) {
                             "text": "Select a user",
                             "emoji": true
                         },
-                        "action_id": "users"
+                        "action_id": "user_selection_inputs"
                     }
                 },
                 {
+                    "block_id": "amounts",
                     "type": "input",
                     "element": {
                         "type": "plain_text_input",
@@ -209,7 +215,7 @@ async function slackActivity(req, res, next) {
                             "type": "plain_text",
                             "text": "Write order amount"
                         },
-                        "action_id": "amounts"
+                        "action_id": "amount_inputs"
                     },
                     "label": {
                         "type": "plain_text",
