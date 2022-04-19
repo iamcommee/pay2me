@@ -65,8 +65,40 @@ async function slackSlashCommand(req, res, next) {
 
     } else if (req.body.command === '/test') {
 
-        console.log(req.body)
+        const triggerID = req.body.trigger_id;
         
+        const result = await web.views.open({
+            trigger_id: triggerID,
+            view: {
+              type: 'modal',
+              callback_id: 'view_identifier',
+              title: {
+                type: 'plain_text',
+                text: 'Modal title'
+              },
+              submit: {
+                type: 'plain_text',
+                text: 'Submit'
+              },
+              blocks: [
+                {
+                  type: 'input',
+                  label: {
+                    type: 'plain_text',
+                    text: 'Input label'
+                  },
+                  element: {
+                    type: 'plain_text_input',
+                    action_id: 'value_indentifier'
+                  }
+                }
+              ]
+            }
+          });
+        
+          // The result contains an identifier for the root view, view.id
+          console.log(`Successfully opened root view ${result.view.id}`);
+
     } else {
 
         res.send('Please use / to see command list');
