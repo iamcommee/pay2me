@@ -67,63 +67,92 @@ async function slackSlashCommand(req, res, next) {
         let block = {
             "response_type": "ephemeral",
             "attachments": [{
+                "title": {
+                    "type": "plain_text",
+                    "text": "pay2me"
+                },
+                "submit": {
+                    "type": "plain_text",
+                    "text": "Submit"
+                },
                 "blocks": [
                     {
-                        "type": "header",
-                        "text": {
+                        "type": "input",
+                        "element": {
+                            "type": "plain_text_input",
+                            "action_id": "title"
+                        },
+                        "label": {
                             "type": "plain_text",
-                            "text": "New request",
+                            "text": "Party"
+                        }
+                    },
+                    {
+                        "type": "input",
+                        "element": {
+                            "type": "plain_text_input",
+                            "placeholder": {
+                                "type": "plain_text",
+                                "text": "ID Card or Phone Number"
+                            }
+                        },
+                        "label": {
+                            "type": "plain_text",
+                            "text": "Promptpay"
+                        }
+                    },
+                    {
+                        "type": "divider"
+                    },
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": "Payer"
+                        },
+                        "accessory": {
+                            "type": "users_select",
+                            "placeholder": {
+                                "type": "plain_text",
+                                "text": "Select a user",
+                                "emoji": true
+                            },
+                            "action_id": "users_select-action"
+                        }
+                    },
+                    {
+                        "type": "input",
+                        "element": {
+                            "type": "plain_text_input",
+                            "placeholder": {
+                                "type": "plain_text",
+                                "text": "Order Amount"
+                            }
+                        },
+                        "label": {
+                            "type": "plain_text",
+                            "text": "Amount",
                             "emoji": true
                         }
                     },
                     {
-                        "type": "section",
-                        "fields": [
-                            {
-                                "type": "mrkdwn",
-                                "text": "*Type:*\nPaid Time Off"
-                            },
-                            {
-                                "type": "mrkdwn",
-                                "text": "*Created by:*\n<example.com|Fred Enriquez>"
-                            }
-                        ]
-                    },
-                    {
-                        "type": "section",
-                        "fields": [
-                            {
-                                "type": "mrkdwn",
-                                "text": "*When:*\nAug 10 - Aug 13"
-                            }
-                        ]
+                        "type": "divider"
                     },
                     {
                         "type": "actions",
                         "elements": [
                             {
                                 "type": "button",
+                                "action_id": "add_payer",
                                 "text": {
                                     "type": "plain_text",
-                                    "emoji": true,
-                                    "text": "Approve"
-                                },
-                                "style": "primary",
-                                "value": "click_me_123"
-                            },
-                            {
-                                "type": "button",
-                                "text": {
-                                    "type": "plain_text",
-                                    "emoji": true,
-                                    "text": "Reject"
-                                },
-                                "style": "danger",
-                                "value": "click_me_123"
+                                    "text": "Add another payer  "
+                                }
                             }
                         ]
                     }
-                ]
+                ],
+                "type": "modal"
             }]
         };
 
