@@ -34,7 +34,7 @@ async function slackSlashCommand(req, res, next) {
 
     if (req.body.command === '/qrcode') {
 
-        const text = req.body.text.split(" ");
+        const text = req.body.text.split("_");
         const promptpay = text[0];
         const message = text[1];
         const amount = text[2];
