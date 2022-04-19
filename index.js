@@ -159,7 +159,7 @@ async function slackActivity(req, res, next) {
 
         if (payload.view.callback_id === 'create_qrcode') {
 
-            const order = payload.view.state.values.order.order_input.value.split("\\n");
+            const order = payload.view.state.values.order.order_input.value.split("\n");
 
             for (let i = 0; i < order.length; i++) {
                 await web.chat.postMessage({
