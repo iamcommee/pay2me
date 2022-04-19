@@ -81,7 +81,7 @@ async function slackSlashCommand(req, res, next) {
                         "type": "input",
                         "element": {
                             "type": "plain_text_input",
-                            "action_id": "party_inputs"
+                            "action_id": "party_input"
                         },
                         "label": {
                             "type": "plain_text",
@@ -97,7 +97,7 @@ async function slackSlashCommand(req, res, next) {
                                 "type": "plain_text",
                                 "text": "Write ID Card or Phone Number"
                             },
-                            "action_id": "promptpay_inputs"
+                            "action_id": "promptpay_input"
                         },
                         "label": {
                             "type": "plain_text",
@@ -105,15 +105,16 @@ async function slackSlashCommand(req, res, next) {
                         }
                     },
                     {
+                        "block_id": "order",
                         "type": "input",
                         "element": {
                             "type": "plain_text_input",
                             "multiline": true,
-                            "action_id": "plain_text_input-action"
+                            "action_id": "order_input"
                         },
                         "label": {
                             "type": "plain_text",
-                            "text": "Label",
+                            "text": "Order",
                             "emoji": true
                         }
                     }
@@ -167,7 +168,7 @@ async function slackActivity(req, res, next) {
 
     }
 
-    res.send()
+    res.send(payload)
 }
 
 async function generatePromptpayQRCode(promptpay, amount) {
