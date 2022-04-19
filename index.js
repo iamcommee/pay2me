@@ -32,15 +32,13 @@ http.createServer(app).listen(port, () => {
 // Commands
 async function slackSlashCommand(req, res, next) {
 
-    // console.log(req.body);
-
     if (req.body.command === '/qrcode') {
 
         const text = req.body.text.split(" ");
         const promptpay = text[0];
         const amount = text[1];
         const payer = text[2];
-        const message = `จ่ายค่าอาหาร ${amount} บาท มาเดี๋ยวนี้คุณ ${payer}`;
+        const message = `${payer}`;
         const imageUrl = `https://pay2me-slack-bot.herokuapp.com/qrcode/${promptpay}/${amount}`;
 
         let block = {
@@ -63,7 +61,7 @@ async function slackSlashCommand(req, res, next) {
 
         res.send(block);
 
-    } else if (req.body.command === '/test') {
+    } else if (req.body.command === '/create') {
 
         const triggerID = req.body.trigger_id;
         
@@ -151,7 +149,7 @@ async function slackSlashCommand(req, res, next) {
                                 "action_id": "add_payer",
                                 "text": {
                                     "type": "plain_text",
-                                    "text": "Add another payer  "
+                                    "text": "Add another payer"
                                 }
                             }
                         ]
@@ -164,7 +162,7 @@ async function slackSlashCommand(req, res, next) {
         
           console.log(`Successfully opened root view ${result.view.id}`);
 
-          res.send()
+          res.send();
 
     } else {
 
@@ -174,7 +172,35 @@ async function slackSlashCommand(req, res, next) {
 }
 
 async function slackActivity(req, res, next) {
+    
     console.log(req.body)
+
+    const payload = req.body;
+
+    if (payload.type === 'block_actions') {
+
+        if (payload.actions[0].action_id === 'add_payer') {
+            const viewID = payload.view.id;
+
+            const result = await web.views.update({
+                view_id: viewID,
+                view: {
+                  type: 'modal',
+                  callback_id: 'create-qrcode-modal',
+                  blocks: [
+                    {
+                      type: 'section',
+                      text: {
+                        type: 'plain_text',
+                        text: 'An updated modal, indeed'
+                      }
+                    }
+                  ]
+                }
+              });
+        }
+
+    }
 
     res.send()
 }
