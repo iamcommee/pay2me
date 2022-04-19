@@ -184,6 +184,10 @@ async function slackActivity(req, res, next) {
                 "view": {
                     "type": 'modal',
                     "callback_id": 'create-qrcode-modal',
+                    "submit": {
+                        "type": "plain_text",
+                        "text": "Submit"
+                    },
                     "title": payload.view.title,
                     "blocks" : payload.view.blocks
                 }
