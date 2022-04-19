@@ -117,5 +117,6 @@ app.get('/health', (req, res) => {
 app.get('/qrcode/:promptpay/:amonut', async (req, res) => {
     const qrCode = await generatePromptpayQRCode(req.params.promptpay, parseFloat(req.params.amonut));
     res.set('Content-Type', 'image/png');
+    res.status(200);
     res.send(qrCode);
 });
