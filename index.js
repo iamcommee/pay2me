@@ -151,72 +151,71 @@ async function slackSlashCommand(req, res, next) {
 
 async function slackActivity(req, res, next) {
 
-        console.log(req.body);
+    console.log(req.body);
 
-        const payload = JSON.parse(req.body.payload);
+    const payload = JSON.parse(req.body.payload);
 
-        if (payload.type === 'view_submission') {
+    if (payload.type === 'view_submission') {
 
-            if (payload.view.callback_id === 'create_qrcode') {
+        if (payload.view.callback_id === 'create_qrcode') {
 
-                const order = payload.view.state.values.order.order_input.value.split("\\n");
+            const order = payload.view.state.values.order.order_input.value.split("\\n");
 
-                for (i == 0; i < order.length; i++) {
-
-                    await web.chat.postMessage({
-                        "channel": payload.response_urls[0].channel_id,
-                        "text": order[i]
-                    });
-                    for (i == 0; i < order.length; i++) {
-
-                        console.log(`Successfully create qr code ${payload.view.id}`);
-                    }
-
-                }
-
-                res.send();
+            for (i == 0; i < order.length; i++) {
+                await web.chat.postMessage({
+                    "channel": payload.response_urls[0].channel_id,
+                    "text": order
+                });
             }
 
-            async function generatePromptpayQRCode(promptpay, amount) {
-                const promptpayQR = require('promptpay-qr');
-                const qrcode = require('qrcode');
+            console.log(`Successfully create qr code ${payload.view.id}`);
+        }
 
-                const payload = promptpayQR(promptpay, {
-                    amount
-                });
+    }
 
-                const qrCodeImageBase64 = await new Promise((resolve, reject) => {
-                    qrcode.toDataURL(payload, (err, svg) => {
-                        if (err) return reject(err);
-                        resolve(svg);
-                    });
-                });
+    res.send();
+}
 
-                return qrCodeImageBase64;
-            }
+async function generatePromptpayQRCode(promptpay, amount) {
+    const promptpayQR = require('promptpay-qr');
+    const qrcode = require('qrcode');
 
-            app.use('/slack/actions', slackInteractions.expressMiddleware());
-            app.post('/slack/commands', bodyParser.urlencoded({
-                extended: false
-            }), slackSlashCommand);
-            app.post('/slack/activities', bodyParser.urlencoded({
-                extended: false
-            }), slackActivity);
+    const payload = promptpayQR(promptpay, {
+        amount
+    });
 
-            app.get('/health', (req, res) => {
-                return res.send({
-                    message: 'OK'
-                });
-            });
+    const qrCodeImageBase64 = await new Promise((resolve, reject) => {
+        qrcode.toDataURL(payload, (err, svg) => {
+            if (err) return reject(err);
+            resolve(svg);
+        });
+    });
 
-            app.get('/qrcode/:promptpay/:amonut', async (req, res) => {
-                const qrCodeImageBase64 = await generatePromptpayQRCode(req.params.promptpay, parseFloat(req.params.amonut));
-                const img = Buffer.from(qrCodeImageBase64.replace(/^data:image\/png;base64,/, ''), 'base64');
+    return qrCodeImageBase64;
+}
 
-                res.writeHead(200, {
-                    'Content-Type': 'image/png',
-                    'Content-Length': img.length
-                });
+app.use('/slack/actions', slackInteractions.expressMiddleware());
+app.post('/slack/commands', bodyParser.urlencoded({
+    extended: false
+}), slackSlashCommand);
+app.post('/slack/activities', bodyParser.urlencoded({
+    extended: false
+}), slackActivity);
 
-                res.end(img);
-            });
+app.get('/health', (req, res) => {
+    return res.send({
+        message: 'OK'
+    });
+});
+
+app.get('/qrcode/:promptpay/:amonut', async (req, res) => {
+    const qrCodeImageBase64 = await generatePromptpayQRCode(req.params.promptpay, parseFloat(req.params.amonut));
+    const img = Buffer.from(qrCodeImageBase64.replace(/^data:image\/png;base64,/, ''), 'base64');
+
+    res.writeHead(200, {
+        'Content-Type': 'image/png',
+        'Content-Length': img.length
+    });
+
+    res.end(img);
+});
