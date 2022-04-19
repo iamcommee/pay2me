@@ -178,6 +178,10 @@ async function slackActivity(req, res, next) {
             const viewID = payload.view.id;
             const triggerID = payload.trigger_id;
 
+            console.log(payload.view.blocks.push( {
+                "type": "divider"
+            }));
+
             const result = await web.views.update({
                 "view_id": viewID,
                 "trigger_id": triggerID,
@@ -186,23 +190,7 @@ async function slackActivity(req, res, next) {
                     "callback_id": payload.view.callback_id,
                     "submit": payload.view.submit,
                     "title": payload.view.title,
-                    "blocks" : payload.view.blocks.push(
-                    {
-                        "type": "section",
-                        "text": {
-                            "type": "mrkdwn",
-                            "text": "Payer"
-                        },
-                        "accessory": {
-                            "type": "users_select",
-                            "placeholder": {
-                                "type": "plain_text",
-                                "text": "Select a user",
-                                "emoji": true
-                            },
-                            "action_id": "users"
-                        }
-                    })
+                    "blocks" : payload.view.blocks,
                 }
             });
 
