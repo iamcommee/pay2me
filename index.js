@@ -163,7 +163,7 @@ async function slackSlashCommand(req, res, next) {
           console.log(`Successfully opened root view ${result.view.id}`);
 
           res.send()
-          
+
     } else {
 
         res.send('Please use / to see command list');
@@ -173,6 +173,8 @@ async function slackSlashCommand(req, res, next) {
 
 async function slackActivity(req, res, next) {
     console.log(req.body)
+
+    res.send()
 }
 
 async function generatePromptpayQRCode(promptpay, amount) {
