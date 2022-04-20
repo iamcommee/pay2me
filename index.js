@@ -8,8 +8,8 @@ const {
     WebClient
 } = require('@slack/web-api');
 
-const slackSigningSecret = process.env.SLACK_SIGNING_SECRET ?? '';
-const slackAccessToken = process.env.SLACK_ACCESS_TOKEN ?? '';
+const slackSigningSecret = process.env.SLACK_SIGNING_SECRET;
+const slackAccessToken = process.env.SLACK_ACCESS_TOKEN;
 
 // Create the adapter using the app's signing secret
 const slackInteractions = createMessageAdapter(slackSigningSecret);
@@ -21,15 +21,10 @@ const web = new WebClient(slackAccessToken);
 const app = express();
 const port = process.env.PORT ?? '80';
 
-if (!slackSigningSecret || !slackAccessToken) {
-    throw new Error('A Slack signing secret and access token are required to run this app');
-}
-
 http.createServer(app).listen(port, () => {
     console.log(`Server listening on port ${port}`);
 });
 
-// Commands
 async function slackSlashCommand(req, res, next) {
 
     if (req.body.command === '/qrcode') {
@@ -48,7 +43,7 @@ async function slackSlashCommand(req, res, next) {
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": `${message}`
+                        "text": `${message} \n <${imageUrl}|QR Code Image>`
                     },
                     "accessory": {
                         "type": "image",
@@ -154,60 +149,66 @@ async function slackActivity(req, res, next) {
     console.log(req.body)
     const payload = JSON.parse(req.body.payload);
 
-    if (payload.type === 'view_submission') {
+    try {
+        if (payload.type === 'view_submission') {
 
-        if (payload.view.callback_id === 'create_qrcode') {
+            if (payload.view.callback_id === 'create_qrcode') {
 
-            const party = payload.view.state.values.party.party_input.value;
-            const promptpay = payload.view.state.values.promptpay.promptpay_input.value;
-            const orderList = payload.view.state.values.order.order_input.value.split("\n");
-            const channelID = payload.response_urls[0].channel_id;
-            
-            const channelInfo = await web.conversations.info({
-                "channel": channelID
-            });
+                const party = payload.view.state.values.party.party_input.value;
+                const promptpay = payload.view.state.values.promptpay.promptpay_input.value;
+                const orderList = payload.view.state.values.order.order_input.value.split("\n");
+                const channelID = payload.response_urls[0].channel_id;
 
-            console.log(channelInfo);
-
-            let blocks = [];
-            for (let i = 0; i < orderList.length; i++) {
-
-                const orderDetail = orderList[i].split("_")
-                const order = orderDetail[0];
-                const amount = orderDetail[1];
-                const message = `${order} ${amount}`
-                const imageUrl = `https://pay2me-slack-bot.herokuapp.com/qrcode/${promptpay}/${amount}`;
-
-                blocks.push({
-                    "type": "divider"
-                }, {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": `${message} \n <${imageUrl}|QR Code Image>`
-                    },
-                    "accessory": {
-                        "type": "image",
-                        "image_url": `${imageUrl}`,
-                        "alt_text": "QR Code"
-                    }
+                const channelInfo = await web.conversations.info({
+                    "channel": channelID
                 });
-            }
-            
-            await web.chat.postMessage({
-                "channel": channelID,
-                "text": `Party : ${party} | Promptpay : ${promptpay}`,
-                "attachments": [{
-                    "blocks": blocks
-                }]
-            });
 
-            console.log(`Successfully create qr code ${payload.view.id}`);
+                console.log(channelInfo);
+
+                let blocks = [];
+                for (let i = 0; i < orderList.length; i++) {
+
+                    const orderDetail = orderList[i].split("_")
+                    const order = orderDetail[0];
+                    const amount = orderDetail[1];
+                    const message = `${order} ${amount}`
+                    const imageUrl = `https://pay2me-slack-bot.herokuapp.com/qrcode/${promptpay}/${amount}`;
+
+                    blocks.push({
+                        "type": "divider"
+                    }, {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": `${message} \n <${imageUrl}|QR Code Image>`
+                        },
+                        "accessory": {
+                            "type": "image",
+                            "image_url": `${imageUrl}`,
+                            "alt_text": "QR Code"
+                        }
+                    });
+                }
+
+                await web.chat.postMessage({
+                    "channel": channelID,
+                    "text": `Party : ${party} | Promptpay : ${promptpay}`,
+                    "attachments": [{
+                        "blocks": blocks
+                    }]
+                });
+
+                console.log(`Successfully create qr code ${payload.view.id}`);
+            }
+
         }
 
+        res.send();
+    } catch (e) {
+        res.status(500).send({
+            message: 'ERROR'
+        });
     }
-
-    res.send();
 }
 
 async function generatePromptpayQRCode(promptpay, amount) {
@@ -247,8 +248,8 @@ app.get('/qrcode/:promptpay/:amonut', async (req, res) => {
     const img = Buffer.from(qrCodeImageBase64.replace(/^data:image\/png;base64,/, ''), 'base64');
 
     res.writeHead(200, {
-        'Content-Type': 'image/png',
-        'Content-Length': img.length
+        "Content-Type": "image/png",
+        "Content-Length": img.length
     });
 
     res.end(img);
