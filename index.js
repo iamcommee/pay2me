@@ -143,7 +143,7 @@ async function slackSlashCommand(req, res, next) {
                         "elements": [
                             {
                                 "type": "mrkdwn",
-                                "text": "Write order list with pattern `order_amount` e.g. \n ข้าวมันไก่_30 \n ก๋วยเตี๋ยว_50"
+                                "text": "`order_amount` e.g. \n OrderA_30 \n OrderB_50"
                             }
                         ]
                     }
