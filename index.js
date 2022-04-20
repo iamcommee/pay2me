@@ -151,6 +151,7 @@ async function slackSlashCommand(req, res, next) {
 
 async function slackActivity(req, res, next) {
 
+    console.log(req.body)
     const payload = JSON.parse(req.body.payload);
 
     if (payload.type === 'view_submission') {
