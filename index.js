@@ -205,7 +205,7 @@ async function slackActivity(req, res, next) {
 
         res.send();
     } catch (e) {
-        console.error(e);
+        console.log(e);
         res.status(500).send({
             message: 'ERROR'
         });
