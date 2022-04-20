@@ -146,7 +146,6 @@ async function slackSlashCommand(req, res, next) {
 
 async function slackActivity(req, res, next) {
 
-    console.log(req.body)
     const payload = JSON.parse(req.body.payload);
 
     try {
@@ -158,12 +157,7 @@ async function slackActivity(req, res, next) {
                 const promptpay = payload.view.state.values.promptpay.promptpay_input.value;
                 const orderList = payload.view.state.values.order.order_input.value.split("\n");
                 const channelID = payload.response_urls[0].channel_id;
-
-                const channelInfo = await web.conversations.info({
-                    "channel": channelID
-                });
-
-                console.log(channelInfo);
+                const responseURL = payload.response_urls[0].response_url;
 
                 let blocks = [];
                 for (let i = 0; i < orderList.length; i++) {
@@ -190,8 +184,9 @@ async function slackActivity(req, res, next) {
                     });
                 }
 
-                await web.chat.postMessage({
-                    "channel": channelID,
+                const axios = require('axios');
+
+                await axios.post(`${responseURL}`, {
                     "text": `Party : ${party} | Promptpay : ${promptpay}`,
                     "attachments": [{
                         "blocks": blocks
@@ -205,7 +200,7 @@ async function slackActivity(req, res, next) {
 
         res.send();
     } catch (e) {
-        console.log(e);
+        console.error(e);
         res.status(500).send({
             message: 'ERROR'
         });
