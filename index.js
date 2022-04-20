@@ -216,6 +216,8 @@ async function slackSlashCommand(req, res, next) {
 
 async function slackActivity(req, res, next) {
 
+    console.log(req.body);
+
     const payload = JSON.parse(req.body.payload);
 
     try {
@@ -265,6 +267,8 @@ async function slackActivity(req, res, next) {
                 });
 
                 console.log(`Successfully create qr code ${payload.view.id}`);
+            } else if (payload.view.callback_id === 'create_sharing_qrcode') {
+                
             }
         }
 
