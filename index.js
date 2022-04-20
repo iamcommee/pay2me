@@ -29,32 +29,39 @@ async function slackSlashCommand(req, res, next) {
 
     if (req.body.command === '/qrcode') {
 
-        const text = req.body.text.split("_");
-        const promptpay = text[0];
-        const order = text[1];
-        const amount = text[2];
-        const message = `${order} ${amount}`
-        const imageUrl = `https://pay2me-slack-bot.herokuapp.com/qrcode/${promptpay}/${amount}`;
+        try {
+            const text = req.body.text.split("_");
+            const promptpay = text[0];
+            const order = text[1];
+            const amount = text[2];
+            const message = `${order} ${amount}`
+            const imageUrl = `https://pay2me-slack-bot.herokuapp.com/qrcode/${promptpay}/${amount}`;
 
-        let block = {
-            "response_type": "in_channel",
-            "attachments": [{
-                "blocks": [{
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": `${message} \n <${imageUrl}|QR Code Image>`
-                    },
-                    "accessory": {
-                        "type": "image",
-                        "image_url": `${imageUrl}`,
-                        "alt_text": "QR Code"
-                    }
+            let block = {
+                "response_type": "in_channel",
+                "attachments": [{
+                    "blocks": [{
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": `${message} \n <${imageUrl}|QR Code Image>`
+                        },
+                        "accessory": {
+                            "type": "image",
+                            "image_url": `${imageUrl}`,
+                            "alt_text": "QR Code"
+                        }
+                    }]
                 }]
-            }]
-        };
+            };
 
-        res.send(block);
+            res.send(block);
+        } catch (e) {
+            console.error(e);
+            res.status(500).send({
+                message: 'ERROR'
+            });
+        }
 
     } else if (req.body.command === '/create') {
 
@@ -187,6 +194,7 @@ async function slackActivity(req, res, next) {
                 const axios = require('axios');
 
                 await axios.post(`${responseURL}`, {
+                    "response_type": "in_channel",
                     "text": `Party : ${party} | Promptpay : ${promptpay}`,
                     "attachments": [{
                         "blocks": blocks
@@ -195,7 +203,6 @@ async function slackActivity(req, res, next) {
 
                 console.log(`Successfully create qr code ${payload.view.id}`);
             }
-
         }
 
         res.send();
