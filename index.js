@@ -284,7 +284,7 @@ async function slackActivity(req, res, next) {
                 const party = payload.view.state.values.party.party_input.value;
                 const promptpay = payload.view.state.values.promptpay.promptpay_input.value;
                 const amount = payload.view.state.values.amount.amount_input.value;
-                const sharedAmount = parseFloat(amount).toFixed(2);
+                const sharedAmount = parseFloat(amount/userList.length).toFixed(2);
                 const message = payload.view.state.values.message.message_input.value;
                 const imageUrl = `https://pay2me-slack-bot.herokuapp.com/qrcode/${promptpay}/${amount}`;
 
