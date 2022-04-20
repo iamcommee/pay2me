@@ -121,6 +121,92 @@ async function slackSlashCommand(req, res, next) {
 
         res.send();
 
+    } else if (req.body.command === '/share') {
+        
+        const triggerID = req.body.trigger_id;
+
+        const result = await web.views.open({
+            trigger_id: triggerID,
+            view: {
+                "title": {
+                    "type": "plain_text",
+                    "text": "pay2me"
+                },
+                "submit": {
+                    "type": "plain_text",
+                    "text": "Submit"
+                },
+                "blocks": [
+                    {
+                        "block_id": "users",
+                        "type": "input",
+                        "element": {
+                            "type": "multi_users_select",
+                            "placeholder": {
+                                "type": "plain_text",
+                                "text": "Select users",
+                                "emoji": true
+                            },
+                            "action_id": "user_input"
+                        },
+                        "label": {
+                            "type": "plain_text",
+                            "text": "Select users to post the result on",
+                            "emoji": true
+                        }
+                    },
+                    {
+                        "block_id": "party",
+                        "type": "input",
+                        "element": {
+                            "type": "plain_text_input",
+                            "action_id": "party_input"
+                        },
+                        "label": {
+                            "type": "plain_text",
+                            "text": "Party"
+                        }
+                    },
+                    {
+                        "block_id": "promptpay",
+                        "type": "input",
+                        "element": {
+                            "type": "plain_text_input",
+                            "placeholder": {
+                                "type": "plain_text",
+                                "text": "Write ID Card or Phone Number"
+                            },
+                            "action_id": "promptpay_input"
+                        },
+                        "label": {
+                            "type": "plain_text",
+                            "text": "Promptpay"
+                        }
+                    },
+                    {
+                        "block_id": "message",
+                        "type": "input",
+                        "element": {
+                            "type": "plain_text_input",
+                            "multiline": true,
+                            "action_id": "message_input"
+                        },
+                        "label": {
+                            "type": "plain_text",
+                            "text": "Message",
+                            "emoji": true
+                        }
+                    }
+                ],
+                "type": "modal",
+                "callback_id": "create_sharing_qrcode"
+            }
+        });
+
+        console.log(`Successfully opened root view ${result.view.id}`);
+
+        res.send();
+
     } else {
 
         res.send('Please use / to see command list');
