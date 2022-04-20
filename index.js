@@ -161,6 +161,13 @@ async function slackActivity(req, res, next) {
             const party = payload.view.state.values.party.party_input.value;
             const promptpay = payload.view.state.values.promptpay.promptpay_input.value;
             const orderList = payload.view.state.values.order.order_input.value.split("\n");
+            const channelID = payload.response_urls[0].channel_id;
+            
+            const channelInfo = await web.conversations.info({
+                "channel": channelID
+            });
+
+            console.log(channelInfo);
 
             let blocks = [];
             for (let i = 0; i < orderList.length; i++) {
@@ -188,7 +195,7 @@ async function slackActivity(req, res, next) {
             }
             
             await web.chat.postMessage({
-                "channel": payload.response_urls[0].channel_id,
+                "channel": channelID,
                 "text": `Party : ${party} | Promptpay : ${promptpay}`,
                 "attachments": [{
                     "blocks": blocks
