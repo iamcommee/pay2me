@@ -126,13 +126,26 @@ async function slackSlashCommand(req, res, next) {
                         "element": {
                             "type": "plain_text_input",
                             "multiline": true,
-                            "action_id": "order_input"
+                            "action_id": "order_input",
+                            "placeholder": {
+                                "type": "plain_text",
+                                "text": "Write order list with pattern order_amount"
+                            },
                         },
                         "label": {
                             "type": "plain_text",
                             "text": "Order",
                             "emoji": true
                         }
+                    },
+                    {
+                        "type": "context",
+                        "elements": [
+                            {
+                                "type": "mrkdwn",
+                                "text": "Write order list with pattern `order_amount` e.g. \n ข้าวมันไก่_30 \n ก๋วยเตี๋ยว_50"
+                            }
+                        ]
                     }
                 ],
                 "type": "modal",
