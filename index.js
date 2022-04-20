@@ -104,12 +104,10 @@ async function slackSlashCommand(req, res, next) {
                     },
                     {
                         "type": "context",
-                        "elements": [
-                            {
-                                "type": "mrkdwn",
-                                "text": "`order_amount` e.g. \n OrderA_30 \n OrderB_50"
-                            }
-                        ]
+                        "elements": [{
+                            "type": "mrkdwn",
+                            "text": "`order_amount` e.g. \n OrderA_30 \n OrderB_50"
+                        }]
                     }
                 ],
                 "type": "modal",
@@ -122,7 +120,7 @@ async function slackSlashCommand(req, res, next) {
         res.send();
 
     } else if (req.body.command === '/share') {
-        
+
         const triggerID = req.body.trigger_id;
 
         const result = await web.views.open({
@@ -136,8 +134,7 @@ async function slackSlashCommand(req, res, next) {
                     "type": "plain_text",
                     "text": "Submit"
                 },
-                "blocks": [
-                    {
+                "blocks": [{
                         "block_id": "user",
                         "type": "input",
                         "element": {
@@ -184,6 +181,22 @@ async function slackSlashCommand(req, res, next) {
                         }
                     },
                     {
+                        "block_id": "amount",
+                        "type": "input",
+                        "element": {
+                            "type": "plain_text_input",
+                            "placeholder": {
+                                "type": "plain_text",
+                                "text": "Write amount"
+                            },
+                            "action_id": "amount_input"
+                        },
+                        "label": {
+                            "type": "plain_text",
+                            "text": "Amount"
+                        }
+                    },
+                    {
                         "block_id": "message",
                         "type": "input",
                         "element": {
@@ -215,8 +228,6 @@ async function slackSlashCommand(req, res, next) {
 }
 
 async function slackActivity(req, res, next) {
-
-    console.log(req.body);
 
     const payload = JSON.parse(req.body.payload);
 
@@ -272,12 +283,30 @@ async function slackActivity(req, res, next) {
                 const userList = payload.view.state.values.user.user_input.selected_users;
                 const party = payload.view.state.values.party.party_input.value;
                 const promptpay = payload.view.state.values.promptpay.promptpay_input.value;
+                const amount = payload.view.state.values.amount.amount_input.value;
                 const message = payload.view.state.values.message.message_input.value;
+                const imageUrl = `https://pay2me-slack-bot.herokuapp.com/qrcode/${promptpay}/${amount}`;
 
-                for (let i = 0; i < userList.length; i++){
+                for (let i = 0; i < userList.length; i++) {
+                    let blocks = [{
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": `${message} \n <${imageUrl}|QR Code Image>`
+                        },
+                        "accessory": {
+                            "type": "image",
+                            "image_url": `${imageUrl}`,
+                            "alt_text": "QR Code"
+                        }
+                    }];
+
                     await web.chat.postMessage({
                         "channel": userList[i],
-                        "text": "OK"
+                        "text": `Party : ${party} | Promptpay : ${promptpay}`,
+                        "attachments": [{
+                            "blocks": blocks
+                        }]
                     });
                 }
 
