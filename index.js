@@ -138,7 +138,7 @@ async function slackSlashCommand(req, res, next) {
                 },
                 "blocks": [
                     {
-                        "block_id": "users",
+                        "block_id": "user",
                         "type": "input",
                         "element": {
                             "type": "multi_users_select",
@@ -268,7 +268,19 @@ async function slackActivity(req, res, next) {
 
                 console.log(`Successfully create qr code ${payload.view.id}`);
             } else if (payload.view.callback_id === 'create_sharing_qrcode') {
-                
+
+                const userList = payload.view.state.values.user.user_input.selected_users;
+                const party = payload.view.state.values.party.party_input.value;
+                const promptpay = payload.view.state.values.promptpay.promptpay_input.value;
+                const message = payload.view.state.values.message.message_input.value;
+
+                for (let i = 0; i < userList.length; i++){
+                    await web.chat.postMessage({
+                        "text": "OK"
+                    });
+                }
+
+                console.log(`Successfully sharing create qr code ${payload.view.id}`);
             }
         }
 
