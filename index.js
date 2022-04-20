@@ -276,6 +276,7 @@ async function slackActivity(req, res, next) {
 
                 for (let i = 0; i < userList.length; i++){
                     await web.chat.postMessage({
+                        "channel": userList[i],
                         "text": "OK"
                     });
                 }
