@@ -27,43 +27,7 @@ http.createServer(app).listen(port, () => {
 
 async function slackSlashCommand(req, res, next) {
 
-    if (req.body.command === '/qrcode') {
-
-        try {
-            const text = req.body.text.split("_");
-            const promptpay = text[0];
-            const order = text[1];
-            const amount = text[2];
-            const message = `${order} ${amount} บาท`
-            const imageUrl = `https://pay2me-slack-bot.herokuapp.com/qrcode/${promptpay}/${amount}`;
-
-            let block = {
-                "response_type": "in_channel",
-                "attachments": [{
-                    "blocks": [{
-                        "type": "section",
-                        "text": {
-                            "type": "mrkdwn",
-                            "text": `${message} \n <${imageUrl}|QR Code Image>`
-                        },
-                        "accessory": {
-                            "type": "image",
-                            "image_url": `${imageUrl}`,
-                            "alt_text": "QR Code"
-                        }
-                    }]
-                }]
-            };
-
-            res.send(block);
-        } catch (e) {
-            console.error(e);
-            res.status(500).send({
-                message: 'ERROR'
-            });
-        }
-
-    } else if (req.body.command === '/create') {
+    if (req.body.command === '/create') {
 
         const triggerID = req.body.trigger_id;
 
