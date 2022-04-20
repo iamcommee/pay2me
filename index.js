@@ -34,7 +34,7 @@ async function slackSlashCommand(req, res, next) {
             const promptpay = text[0];
             const order = text[1];
             const amount = text[2];
-            const message = `${order} ${amount}`
+            const message = `${order} ${amount} บาท`
             const imageUrl = `https://pay2me-slack-bot.herokuapp.com/qrcode/${promptpay}/${amount}`;
 
             let block = {
@@ -172,7 +172,7 @@ async function slackActivity(req, res, next) {
                     const orderDetail = orderList[i].split("_")
                     const order = orderDetail[0];
                     const amount = orderDetail[1];
-                    const message = `${order} ${amount}`
+                    const message = `${order} ${amount} บาท`
                     const imageUrl = `https://pay2me-slack-bot.herokuapp.com/qrcode/${promptpay}/${amount}`;
 
                     blocks.push({
